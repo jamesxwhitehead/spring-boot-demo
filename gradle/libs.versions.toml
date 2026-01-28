@@ -2,6 +2,10 @@
 kotlin = "2.2.21"
 springframework-boot = "4.0.2"
 spring-dependency-management = "1.1.7"
+datafaker = "2.5.3"
+
+[libraries]
+datafaker = { module = "net.datafaker:datafaker", version.ref = "datafaker" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
