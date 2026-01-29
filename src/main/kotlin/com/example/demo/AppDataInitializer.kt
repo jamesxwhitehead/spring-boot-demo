@@ -1,7 +1,6 @@
 package com.example.demo
 
 import com.example.demo.entity.Post
-import com.example.demo.entity.PostStatus
 import jakarta.persistence.EntityManager
 import net.datafaker.Faker
 import org.springframework.boot.ApplicationArguments
@@ -19,12 +18,11 @@ class AppDataInitializer(private val entityManager: EntityManager) : Application
 
     @Transactional
     override fun run(args: ApplicationArguments) {
-        (1..20).forEach { _ ->
+        (1..10).forEach { _ ->
             val post = Post().apply {
                 author = faker.book().author()
                 title = faker.book().title()
                 content = faker.lorem().paragraph()
-                status = faker.options().option(PostStatus::class.java)
             }
 
             entityManager.persist(post)
