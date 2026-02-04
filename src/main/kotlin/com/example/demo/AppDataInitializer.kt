@@ -1,16 +1,21 @@
 package com.example.demo
 
 import com.example.demo.entity.Post
-import jakarta.persistence.EntityManager
+import com.example.demo.repository.PostRepository
+import com.example.demo.repository.TagRepository
 import net.datafaker.Faker
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
+import java.util.Locale
+import java.util.Random
 
 @Component
-class AppDataInitializer(private val entityManager: EntityManager) : ApplicationRunner {
+class AppDataInitializer(
+    private val postRepository: PostRepository,
+    private val tagRepository: TagRepository
+) : ApplicationRunner {
     private val faker = Faker(
         Locale.of(LOCALE_LANGUAGE, LOCALE_COUNTRY),
         Random(SEED)
@@ -18,17 +23,23 @@ class AppDataInitializer(private val entityManager: EntityManager) : Application
 
     @Transactional
     override fun run(args: ApplicationArguments) {
-        (1..10).forEach { _ ->
-            val post = Post().apply {
-                author = faker.book().author()
-                title = faker.book().title()
-                content = faker.lorem().paragraph()
+        repeat(10) {
+            val post = Post(
+                faker.book().author(),
+                faker.book().title(),
+                faker.lorem().paragraph()
+            )
+
+            repeat(2) {
+                val tag = tagRepository.findOrNew(faker.book().genre())
+
+                post.addTag(tag)
             }
 
-            entityManager.persist(post)
+            postRepository.save(post)
         }
 
-        entityManager.flush()
+        postRepository.flush()
     }
 
     companion object {

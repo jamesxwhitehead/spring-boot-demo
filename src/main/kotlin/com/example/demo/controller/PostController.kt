@@ -24,12 +24,16 @@ class PostController(
     }
 
     @PatchMapping("/{id}/publish")
-    fun publish(@PathVariable id: Long) {
-        publisher.publish(id)
+    fun publish(@PathVariable id: Long): ResponseEntity<Post> {
+        val post = publisher.publish(id)
+
+        return ResponseEntity.ok(post)
     }
 
     @PatchMapping("/{id}/archive")
-    fun archive(@PathVariable id: Long) {
-        publisher.archive(id)
+    fun archive(@PathVariable id: Long): ResponseEntity<Post> {
+        val post = publisher.archive(id)
+
+        return ResponseEntity.ok(post)
     }
 }

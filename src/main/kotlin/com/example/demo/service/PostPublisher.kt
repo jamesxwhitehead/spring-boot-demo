@@ -1,9 +1,12 @@
 package com.example.demo.service
 
-interface PostPublisher {
-    @Throws(IllegalStateException::class)
-    fun publish(id: Long)
+import com.example.demo.entity.Post
+import com.example.demo.exception.PostStateTransitionNotAllowedException
 
-    @Throws(IllegalStateException::class)
-    fun archive(id: Long)
+interface PostPublisher {
+    @Throws(PostStateTransitionNotAllowedException::class)
+    fun publish(id: Long): Post
+
+    @Throws(PostStateTransitionNotAllowedException::class)
+    fun archive(id: Long): Post
 }
