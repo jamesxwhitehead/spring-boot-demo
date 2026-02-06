@@ -55,7 +55,7 @@ class PostControllerTest(
             .andExpectAll {
                 status { isNotFound() }
                 content { contentType(MediaType.APPLICATION_PROBLEM_JSON) }
-                jsonPath("$.detail") { value("No row with the given identifier exists for entity [com.example.demo.entity.Post with id '${Long.MAX_VALUE}']") }
+                jsonPath("$.detail") { value("Post not found (id=${Long.MAX_VALUE})") }
                 jsonPath("$.instance") { value(path) }
                 jsonPath("$.status") { value(HttpStatus.NOT_FOUND.value()) }
                 jsonPath("$.title") { value(HttpStatus.NOT_FOUND.reasonPhrase) }
@@ -103,7 +103,7 @@ class PostControllerTest(
             .andExpectAll {
                 status { isNotFound() }
                 content { contentType(MediaType.APPLICATION_PROBLEM_JSON) }
-                jsonPath("$.detail") { value("No row with the given identifier exists for entity [com.example.demo.entity.Post with id '${Long.MAX_VALUE}']") }
+                jsonPath("$.detail") { value("Post not found (id=${Long.MAX_VALUE})") }
                 jsonPath("$.instance") { value(path) }
                 jsonPath("$.status") { value(HttpStatus.NOT_FOUND.value()) }
                 jsonPath("$.title") { value(HttpStatus.NOT_FOUND.reasonPhrase) }

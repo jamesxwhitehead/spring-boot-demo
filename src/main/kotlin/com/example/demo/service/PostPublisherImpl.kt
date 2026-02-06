@@ -3,7 +3,9 @@ package com.example.demo.service
 import com.example.demo.entity.Post
 import com.example.demo.entity.PostState
 import com.example.demo.exception.PostStateTransitionNotAllowedException
+import com.example.demo.exception.ResourceNotFoundException
 import com.example.demo.repository.PostRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -11,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional
 class PostPublisherImpl(private val repository: PostRepository) : PostPublisher {
     @Transactional
     override fun publish(id: Long): Post {
-        val post = repository.getReferenceById(id)
+        val post = repository.findByIdOrNull(id) ?: throw ResourceNotFoundException.byId("Post", id)
 
         try {
             post.publish()
@@ -27,7 +29,7 @@ class PostPublisherImpl(private val repository: PostRepository) : PostPublisher 
 
     @Transactional
     override fun archive(id: Long): Post {
-        val post = repository.getReferenceById(id)
+        val post = repository.findByIdOrNull(id) ?: throw ResourceNotFoundException.byId("Post", id)
 
         try {
             post.archive()
@@ -41,7 +43,7 @@ class PostPublisherImpl(private val repository: PostRepository) : PostPublisher 
         return repository.save(post)
     }
 
-    private companion object {
+    companion object {
         const val ERROR_DETAIL: String = "Operation violates post lifecycle rules: %s -> %s is not permitted."
     }
 }
