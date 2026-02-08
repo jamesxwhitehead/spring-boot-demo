@@ -25,9 +25,27 @@ class PostControllerTest(
         mockMvc.get("/posts")
             .andExpectAll {
                 status { isOk() }
-                content { contentTypeCompatibleWith(MediaType.APPLICATION_JSON) }
+                content { contentType(MediaType.APPLICATION_JSON) }
                 jsonPath("$") { isArray() }
                 jsonPath("$.length()") { value(10) }
+            }
+    }
+
+    @Test
+    fun show() {
+        mockMvc.get("/posts/${POST_ID}")
+            .andExpectAll {
+                status { isOk() }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                jsonPath("$.id") { value(POST_ID) }
+                jsonPath("$.author") { value("Phebe Lehner") }
+                jsonPath("$.title") { value("Gone with the Wind") }
+                jsonPath("$.content") { exists() }
+                jsonPath("$.publishedAt") { value(null) }
+                jsonPath("$.state") { value(PostState.DRAFT.name) }
+                jsonPath("$.tags") { isArray() }
+                jsonPath("$.tags.length()") { value(2) }
+                jsonPath("$.version") { isNumber() }
             }
     }
 
