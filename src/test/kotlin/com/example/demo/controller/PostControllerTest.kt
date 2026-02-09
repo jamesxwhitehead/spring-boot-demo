@@ -63,8 +63,50 @@ class PostControllerTest(
     }
 
     @Test
+    fun storeShouldReturnBadRequestWhenRequiredFieldIsNull() {
+        val post = mapOf(
+            "author" to null,
+            "title" to null,
+            "content" to null
+        )
+
+        mockMvc.post("/posts") {
+            accept = MediaType.APPLICATION_JSON
+            contentType = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(post)
+        }.andExpectAll {
+            status { isBadRequest() }
+            content { contentType(MediaType.APPLICATION_PROBLEM_JSON) }
+            jsonPath("$.detail") { exists() }
+            jsonPath("$.instance") { value("/posts") }
+            jsonPath("$.status") { value(HttpStatus.BAD_REQUEST.value()) }
+            jsonPath("$.title") { value(HttpStatus.BAD_REQUEST.reasonPhrase) }
+        }
+    }
+
+    @Test
+    fun storeShouldReturnBadRequestWhenRequiredFieldIsBlank() {
+        val post = PostFixture.empty()
+
+        mockMvc.post("/posts") {
+            accept = MediaType.APPLICATION_JSON
+            contentType = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(post)
+        }.andExpectAll {
+            status { isBadRequest() }
+            content { contentType(MediaType.APPLICATION_PROBLEM_JSON) }
+            jsonPath("$.detail") { exists() }
+            jsonPath("$.instance") { value("/posts") }
+            jsonPath("$.status") { value(HttpStatus.BAD_REQUEST.value()) }
+            jsonPath("$.title") { value(HttpStatus.BAD_REQUEST.reasonPhrase) }
+        }
+    }
+
+    @Test
     fun show() {
-        mockMvc.get("/posts/${POST_ID}")
+        val path = "/posts/${POST_ID}"
+
+        mockMvc.get(path)
             .andExpectAll {
                 status { isOk() }
                 content { contentType(MediaType.APPLICATION_JSON) }
@@ -77,6 +119,21 @@ class PostControllerTest(
                 jsonPath("$.tags") { isArray() }
                 jsonPath("$.tags.length()") { value(2) }
                 jsonPath("$.version") { isNumber() }
+            }
+    }
+
+    @Test
+    fun showShouldReturnNotFoundWhenPostDoesNotExist() {
+        val path = "/posts/${Long.MAX_VALUE}"
+
+        mockMvc.get(path)
+            .andExpectAll {
+                status { isNotFound() }
+                content { contentType(MediaType.APPLICATION_PROBLEM_JSON) }
+                jsonPath("$.detail") { value("Post not found (id=${Long.MAX_VALUE})") }
+                jsonPath("$.instance") { value(path) }
+                jsonPath("$.status") { value(HttpStatus.NOT_FOUND.value()) }
+                jsonPath("$.title") { value(HttpStatus.NOT_FOUND.reasonPhrase) }
             }
     }
 
@@ -160,7 +217,7 @@ class PostControllerTest(
     }
 
     @Test
-    fun archiveShouldReturnUnprocessableContentWhenPostCannotBePublished() {
+    fun archiveShouldReturnUnprocessableContentWhenPostCannotBeArchived() {
         val post = repository.getReferenceById(POST_ID)
         post.archive()
         repository.save(post)

@@ -9,5 +9,7 @@ class PostFixture {
             faker.book().title(),
             faker.lorem().paragraph()
         )
+
+        fun empty() = Post("", "", "")
     }
 }
