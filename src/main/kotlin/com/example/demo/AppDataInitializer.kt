@@ -8,19 +8,13 @@ import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import java.util.Locale
-import java.util.Random
 
 @Component
 class AppDataInitializer(
+    private val faker: Faker,
     private val postRepository: PostRepository,
     private val tagRepository: TagRepository
 ) : ApplicationRunner {
-    private val faker = Faker(
-        Locale.of(LOCALE_LANGUAGE, LOCALE_COUNTRY),
-        Random(SEED)
-    )
-
     @Transactional
     override fun run(args: ApplicationArguments) {
         repeat(10) {
@@ -40,11 +34,5 @@ class AppDataInitializer(
         }
 
         postRepository.flush()
-    }
-
-    companion object {
-        private const val LOCALE_LANGUAGE = "en-AU"
-        private const val LOCALE_COUNTRY = "Australia"
-        private const val SEED = 1L
     }
 }

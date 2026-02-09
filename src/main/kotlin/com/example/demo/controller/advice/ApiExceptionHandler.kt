@@ -1,4 +1,4 @@
-package com.example.demo.controller
+package com.example.demo.controller.advice
 
 import com.example.demo.exception.PostStateTransitionNotAllowedException
 import com.example.demo.exception.ResourceNotFoundException

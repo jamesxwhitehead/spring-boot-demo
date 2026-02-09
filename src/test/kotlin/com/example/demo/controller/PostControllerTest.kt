@@ -1,7 +1,11 @@
 package com.example.demo.controller
 
+import com.example.demo.entity.PostFixture
 import com.example.demo.entity.PostState
 import com.example.demo.repository.PostRepository
+import com.fasterxml.jackson.databind.ObjectMapper
+import net.datafaker.Faker
+import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -11,6 +15,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.patch
+import org.springframework.test.web.servlet.post
 import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
@@ -18,8 +23,11 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class PostControllerTest(
     @Autowired private val mockMvc: MockMvc,
+    @Autowired private val faker: Faker,
     @Autowired private val repository: PostRepository
 ) {
+    private val objectMapper = ObjectMapper()
+
     @Test
     fun index() {
         mockMvc.get("/posts")
@@ -29,6 +37,29 @@ class PostControllerTest(
                 jsonPath("$") { isArray() }
                 jsonPath("$.length()") { value(10) }
             }
+    }
+
+    @Test
+    fun store() {
+        val post = PostFixture.create(faker)
+
+        mockMvc.post("/posts") {
+            accept = MediaType.APPLICATION_JSON
+            contentType = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(post)
+        }.andExpectAll {
+            status { isCreated() }
+            header { string("Location", containsString("/posts/")) }
+            content { contentType(MediaType.APPLICATION_JSON) }
+            jsonPath("$.id") { isNumber() }
+            jsonPath("$.author") { value(post.author) }
+            jsonPath("$.title") { value(post.title) }
+            jsonPath("$.content") { value(post.content) }
+            jsonPath("$.publishedAt") { value(null) }
+            jsonPath("$.state") { value(PostState.DRAFT.name) }
+            jsonPath("$.tags") { isArray() }
+            jsonPath("$.version") { isNumber() }
+        }
     }
 
     @Test

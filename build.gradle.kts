@@ -4,6 +4,7 @@ plugins {
 	alias(libs.plugins.springframework.boot)
 	alias(libs.plugins.spring.dependency.management)
     alias(libs.plugins.kotlin.plugin.jpa)
+    id("java-test-fixtures")
 }
 
 group = "com.example"
@@ -32,6 +33,8 @@ dependencies {
     runtimeOnly("com.h2database:h2")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
+    testFixturesApi(libs.datafaker)
 
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
