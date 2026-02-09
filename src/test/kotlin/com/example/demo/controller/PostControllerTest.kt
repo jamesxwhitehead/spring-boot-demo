@@ -64,11 +64,7 @@ class PostControllerTest(
 
     @Test
     fun storeShouldReturnBadRequestWhenRequiredFieldIsNull() {
-        val post = mapOf(
-            "author" to null,
-            "title" to null,
-            "content" to null
-        )
+        val post = PostFixture.nullFields()
 
         mockMvc.post("/posts") {
             accept = MediaType.APPLICATION_JSON
@@ -86,7 +82,7 @@ class PostControllerTest(
 
     @Test
     fun storeShouldReturnBadRequestWhenRequiredFieldIsBlank() {
-        val post = PostFixture.empty()
+        val post = PostFixture.blank()
 
         mockMvc.post("/posts") {
             accept = MediaType.APPLICATION_JSON

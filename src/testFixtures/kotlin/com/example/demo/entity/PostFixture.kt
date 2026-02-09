@@ -10,6 +10,12 @@ class PostFixture {
             faker.lorem().paragraph()
         )
 
-        fun empty() = Post("", "", "")
+        fun nullFields() = mapOf(
+            "author" to null,
+            "title" to null,
+            "content" to null
+        )
+
+        fun blank() = Post("", "", "")
     }
 }
