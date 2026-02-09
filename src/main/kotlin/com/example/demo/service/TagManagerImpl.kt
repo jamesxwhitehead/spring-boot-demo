@@ -18,7 +18,7 @@ class TagManagerImpl(
     @Transactional
     override fun addPostTag(postId: Long, tagName: String) {
         val post = postRepository.findByIdOrNull(postId) ?: throw ResourceNotFoundException.byId("Post", postId)
-        val tag = tagRepository.findOrNew(tagName)
+        val tag = tagRepository.findOrCreate(tagName)
 
         post.addTag(tag)
 

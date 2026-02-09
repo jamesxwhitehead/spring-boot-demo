@@ -25,7 +25,7 @@ class AppDataInitializer(
             )
 
             repeat(2) {
-                val tag = tagRepository.findOrNew(faker.book().genre())
+                val tag = tagRepository.findOrCreate(faker.book().genre())
 
                 post.addTag(tag)
             }

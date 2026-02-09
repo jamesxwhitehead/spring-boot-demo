@@ -1,6 +1,7 @@
 package com.example.demo.repository
 
 import com.example.demo.entity.Tag
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
@@ -11,8 +12,15 @@ import org.springframework.stereotype.Repository
 interface TagRepository : JpaRepository<Tag, Long> {
     fun findByName(name: String): Tag?
 
-    fun findOrNew(name: String): Tag {
-        return findByName(name) ?: Tag(name)
+    @Throws(DataIntegrityViolationException::class)
+    fun findOrCreate(name: String): Tag {
+        findByName(name)?.let { return it }
+
+        return try {
+            saveAndFlush(Tag(name))
+        } catch (exception: DataIntegrityViolationException) {
+            findByName(name) ?: throw exception
+        }
     }
 
     @Modifying
