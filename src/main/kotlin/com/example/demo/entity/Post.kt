@@ -1,5 +1,6 @@
 package com.example.demo.entity
 
+import com.example.demo.dto.request.CreatePostRequestDto
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -13,8 +14,6 @@ import jakarta.persistence.JoinTable
 import jakarta.persistence.Lob
 import jakarta.persistence.ManyToMany
 import jakarta.persistence.Version
-import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.Size
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -22,17 +21,12 @@ import kotlin.time.Instant
 @Entity
 @OptIn(ExperimentalTime::class)
 class Post(
-    @NotBlank
-    @Size(max = 255)
     @Column(nullable = false)
-    var author: String,
+    val author: String,
 
-    @NotBlank
-    @Size(max = 255)
     @Column(nullable = false)
     var title: String,
 
-    @NotBlank
     @Lob
     @Column(nullable = false)
     var content: String
@@ -89,5 +83,9 @@ class Post(
         check(state.canTransitionTo(PostState.ARCHIVED))
 
         state = PostState.ARCHIVED
+    }
+
+    companion object {
+        fun fromDto(dto: CreatePostRequestDto) = Post(dto.author, dto.title, dto.content)
     }
 }

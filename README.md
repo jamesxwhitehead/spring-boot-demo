@@ -145,7 +145,7 @@ src/test/kotlin/com/example/demo
   DemoApplicationTest -> context smoke test
 
 src/testFixtures/kotlin
-  entity/        -> reusable fixtures/builders for tests
+  ```            -> reusable fixtures/builders for tests
 ```
 
 ---

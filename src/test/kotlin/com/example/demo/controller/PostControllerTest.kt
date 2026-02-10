@@ -1,6 +1,6 @@
 package com.example.demo.controller
 
-import com.example.demo.entity.PostFixture
+import com.example.demo.dto.request.CreatePostRequestDtoFixture
 import com.example.demo.entity.PostState
 import com.example.demo.repository.PostRepository
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -41,20 +41,20 @@ class PostControllerTest(
 
     @Test
     fun store() {
-        val post = PostFixture.create(faker)
+        val dto = CreatePostRequestDtoFixture.create(faker)
 
         mockMvc.post("/posts") {
             accept = MediaType.APPLICATION_JSON
             contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(post)
+            content = objectMapper.writeValueAsString(dto)
         }.andExpectAll {
             status { isCreated() }
             header { string("Location", containsString("/posts/")) }
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.id") { isNumber() }
-            jsonPath("$.author") { value(post.author) }
-            jsonPath("$.title") { value(post.title) }
-            jsonPath("$.content") { value(post.content) }
+            jsonPath("$.author") { value(dto.author) }
+            jsonPath("$.title") { value(dto.title) }
+            jsonPath("$.content") { value(dto.content) }
             jsonPath("$.publishedAt") { value(null) }
             jsonPath("$.state") { value(PostState.DRAFT.name) }
             jsonPath("$.tags") { isArray() }
@@ -64,12 +64,12 @@ class PostControllerTest(
 
     @Test
     fun storeShouldReturnBadRequestWhenRequiredFieldIsNull() {
-        val post = PostFixture.nullFields()
+        val dto = CreatePostRequestDtoFixture.nullFields()
 
         mockMvc.post("/posts") {
             accept = MediaType.APPLICATION_JSON
             contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(post)
+            content = objectMapper.writeValueAsString(dto)
         }.andExpectAll {
             status { isBadRequest() }
             content { contentType(MediaType.APPLICATION_PROBLEM_JSON) }
@@ -82,12 +82,12 @@ class PostControllerTest(
 
     @Test
     fun storeShouldReturnBadRequestWhenRequiredFieldIsBlank() {
-        val post = PostFixture.blank()
+        val dto = CreatePostRequestDtoFixture.blank()
 
         mockMvc.post("/posts") {
             accept = MediaType.APPLICATION_JSON
             contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(post)
+            content = objectMapper.writeValueAsString(dto)
         }.andExpectAll {
             status { isBadRequest() }
             content { contentType(MediaType.APPLICATION_PROBLEM_JSON) }
