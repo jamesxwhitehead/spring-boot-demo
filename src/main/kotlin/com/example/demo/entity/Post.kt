@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.JoinTable
 import jakarta.persistence.Lob
 import jakarta.persistence.ManyToMany
+import jakarta.persistence.OrderBy
 import jakarta.persistence.Version
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -55,6 +56,7 @@ class Post(
         joinColumns = [JoinColumn(name = "post_id")],
         inverseJoinColumns = [JoinColumn(name = "tag_id")]
     )
+    @OrderBy("id ASC")
     private val _tags: MutableSet<Tag> = mutableSetOf()
 
     val tags: Set<Tag>
