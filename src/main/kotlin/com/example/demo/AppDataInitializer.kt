@@ -17,18 +17,53 @@ class AppDataInitializer(
 ) : ApplicationRunner {
     @Transactional
     override fun run(args: ApplicationArguments) {
-        repeat(10) {
+        repeat(5) {
             val post = Post(
-                faker.book().author(),
-                faker.book().title(),
-                faker.lorem().paragraph()
+                author = faker.programmingLanguage().creator(),
+                title = faker.computer().linux(),
+                content = faker.lorem().paragraph()
             )
 
-            repeat(2) {
-                val tag = tagRepository.findOrCreate(faker.book().genre())
+            post.addTag(tagRepository.findOrCreate("Linux"))
+            post.addTag(tagRepository.findOrCreate(faker.computer().type()))
+            post.addTag(tagRepository.findOrCreate(faker.computer().brand()))
+            post.addTag(tagRepository.findOrCreate(faker.hacker().adjective()))
+            post.addTag(tagRepository.findOrCreate(faker.hacker().noun()))
+            post.addTag(tagRepository.findOrCreate(faker.hacker().verb()))
 
-                post.addTag(tag)
-            }
+            postRepository.save(post)
+        }
+
+        repeat(5) {
+            val post = Post(
+                author = faker.programmingLanguage().creator(),
+                title = faker.computer().macos(),
+                content = faker.lorem().paragraph()
+            )
+
+            post.addTag(tagRepository.findOrCreate("macOS"))
+            post.addTag(tagRepository.findOrCreate(faker.computer().type()))
+            post.addTag(tagRepository.findOrCreate("Apple"))
+            post.addTag(tagRepository.findOrCreate(faker.hacker().adjective()))
+            post.addTag(tagRepository.findOrCreate(faker.hacker().noun()))
+            post.addTag(tagRepository.findOrCreate(faker.hacker().verb()))
+
+            postRepository.save(post)
+        }
+
+        repeat(5) {
+            val post = Post(
+                author = faker.programmingLanguage().creator(),
+                title = faker.computer().windows(),
+                content = faker.lorem().paragraph()
+            )
+
+            post.addTag(tagRepository.findOrCreate("Windows"))
+            post.addTag(tagRepository.findOrCreate(faker.computer().type()))
+            post.addTag(tagRepository.findOrCreate(faker.computer().brand()))
+            post.addTag(tagRepository.findOrCreate(faker.hacker().adjective()))
+            post.addTag(tagRepository.findOrCreate(faker.hacker().noun()))
+            post.addTag(tagRepository.findOrCreate(faker.hacker().verb()))
 
             postRepository.save(post)
         }

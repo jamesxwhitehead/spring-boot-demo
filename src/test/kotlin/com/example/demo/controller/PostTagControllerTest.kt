@@ -25,7 +25,7 @@ class PostTagControllerTest(@Autowired private val mockMvc: MockMvc) {
 
     @Test
     fun destroy() {
-        val path = "/posts/${POST_ID}/tags/Western"
+        val path = "/posts/${POST_ID}/tags/HP"
 
         mockMvc.delete(path)
             .andExpectAll {
@@ -33,7 +33,7 @@ class PostTagControllerTest(@Autowired private val mockMvc: MockMvc) {
             }
     }
 
-    private companion object {
-        const val POST_ID: Long = 1L
+    companion object {
+        private const val POST_ID: Long = 1L
     }
 }

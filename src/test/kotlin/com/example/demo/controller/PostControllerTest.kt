@@ -35,7 +35,7 @@ class PostControllerTest(
                 status { isOk() }
                 content { contentType(MediaType.APPLICATION_JSON) }
                 jsonPath("$") { isArray() }
-                jsonPath("$.length()") { value(10) }
+                jsonPath("$.length()") { value(15) }
             }
     }
 
@@ -107,13 +107,13 @@ class PostControllerTest(
                 status { isOk() }
                 content { contentType(MediaType.APPLICATION_JSON) }
                 jsonPath("$.id") { value(POST_ID) }
-                jsonPath("$.author") { value("Phebe Lehner") }
-                jsonPath("$.title") { value("Gone with the Wind") }
+                jsonPath("$.author") { value("Roberto Ierusalimschy") }
+                jsonPath("$.title") { value("Ubuntu Server 19.10") }
                 jsonPath("$.content") { exists() }
                 jsonPath("$.publishedAt") { value(null) }
                 jsonPath("$.state") { value(PostState.DRAFT.name) }
                 jsonPath("$.tags") { isArray() }
-                jsonPath("$.tags.length()") { value(2) }
+                jsonPath("$.tags.length()") { value(6) }
                 jsonPath("$.version") { isNumber() }
             }
     }
@@ -231,7 +231,7 @@ class PostControllerTest(
             }
     }
 
-    private companion object {
-        const val POST_ID: Long = 1L
+    companion object {
+        private const val POST_ID: Long = 1L
     }
 }

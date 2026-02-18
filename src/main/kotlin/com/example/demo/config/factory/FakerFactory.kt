@@ -6,14 +6,14 @@ import java.util.Random
 
 class FakerFactory {
     companion object {
+        private const val LOCALE_LANGUAGE = "en"
+        private const val LOCALE_COUNTRY = "AU"
+        private const val SEED = 1L
+
         @JvmStatic
         fun create(): Faker = Faker(
             Locale.of(LOCALE_LANGUAGE, LOCALE_COUNTRY),
             Random(SEED)
         )
-
-        private const val LOCALE_LANGUAGE = "en-AU"
-        private const val LOCALE_COUNTRY = "Australia"
-        private const val SEED = 1L
     }
 }
