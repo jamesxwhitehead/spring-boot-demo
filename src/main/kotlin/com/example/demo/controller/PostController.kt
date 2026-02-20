@@ -3,6 +3,7 @@ package com.example.demo.controller
 import com.example.demo.dto.request.CreatePostRequestDto
 import com.example.demo.entity.Post
 import com.example.demo.exception.ResourceNotFoundException
+import com.example.demo.exception.byId
 import com.example.demo.repository.PostRepository
 import com.example.demo.service.PostPublisher
 import org.springframework.data.repository.findByIdOrNull
@@ -32,6 +33,7 @@ class PostController(
     @PostMapping
     fun store(@Validated @RequestBody request: CreatePostRequestDto): ResponseEntity<Post> {
         val post = Post.fromDto(request)
+
         repository.save(post)
 
         val location = buildLocationHeader(post.id!!)
@@ -41,7 +43,7 @@ class PostController(
 
     @GetMapping("/{id}")
     fun show(@PathVariable id: Long): ResponseEntity<Post> {
-        val post = repository.findByIdOrNull(id) ?: throw ResourceNotFoundException.byId("Post", id)
+        val post = repository.findByIdOrNull(id) ?: throw ResourceNotFoundException.byId<Post>(id)
 
         return ResponseEntity.ok(post)
     }

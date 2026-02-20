@@ -3,7 +3,6 @@ package com.example.demo.controller
 import com.example.demo.dto.request.CreatePostRequestDtoFixture
 import com.example.demo.entity.PostState
 import com.example.demo.repository.PostRepository
-import com.fasterxml.jackson.databind.ObjectMapper
 import net.datafaker.Faker
 import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Test
@@ -17,6 +16,7 @@ import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.patch
 import org.springframework.test.web.servlet.post
 import org.springframework.transaction.annotation.Transactional
+import tools.jackson.databind.ObjectMapper
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -24,9 +24,9 @@ import org.springframework.transaction.annotation.Transactional
 class PostControllerTest(
     @Autowired private val mockMvc: MockMvc,
     @Autowired private val faker: Faker,
+    @Autowired private val objectMapper: ObjectMapper,
     @Autowired private val repository: PostRepository
 ) {
-    private val objectMapper = ObjectMapper()
 
     @Test
     fun index() {

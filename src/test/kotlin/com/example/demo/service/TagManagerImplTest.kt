@@ -1,6 +1,10 @@
 package com.example.demo.service
 
+import com.example.demo.entity.Post
+import com.example.demo.entity.Tag
 import com.example.demo.exception.ResourceNotFoundException
+import com.example.demo.exception.byField
+import com.example.demo.exception.byId
 import com.example.demo.repository.PostRepository
 import com.example.demo.repository.TagRepository
 import org.assertj.core.api.Assertions.assertThat
@@ -20,7 +24,7 @@ class TagManagerImplTest(
 ) {
     @Test
     fun addPostTag() {
-        val post = postRepository.findByIdOrNull(POST_ID) ?: fail { ResourceNotFoundException.byId("Post", POST_ID).toString() }
+        val post = postRepository.findByIdOrNull(POST_ID) ?: fail { ResourceNotFoundException.byId<Post>(POST_ID).toString() }
         val tag = tagRepository.findOrCreate("test")
 
         assertThat(post.tags.size).isEqualTo(6)
@@ -34,8 +38,8 @@ class TagManagerImplTest(
 
     @Test
     fun removePostTag() {
-        val post = postRepository.findByIdOrNull(POST_ID_15) ?: fail { ResourceNotFoundException.byId("Post", POST_ID_15).toString() }
-        val tag = tagRepository.findByName("Asus") ?: fail { ResourceNotFoundException.byField("Tag", "name", "Asus").toString() }
+        val post = postRepository.findByIdOrNull(POST_ID_15) ?: fail { ResourceNotFoundException.byId<Post>(POST_ID_15).toString() }
+        val tag = tagRepository.findByName("Asus") ?: fail { ResourceNotFoundException.byField<Tag>("name", "Asus").toString() }
 
         assertThat(post.tags.size).isEqualTo(6)
         assertThat(post.tags).contains(tag)
