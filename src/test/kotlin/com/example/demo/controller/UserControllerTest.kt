@@ -2,8 +2,10 @@ package com.example.demo.controller
 
 import com.example.demo.dto.request.CreateUserRequestDtoFixture
 import com.example.demo.entity.User
+import com.example.demo.entity.UserFixture
 import com.example.demo.repository.UserRepository
 import net.datafaker.Faker
+import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.Matchers.containsString
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,6 +15,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.patch
 import org.springframework.test.web.servlet.post
 import org.springframework.transaction.annotation.Transactional
 import tools.jackson.databind.ObjectMapper
@@ -132,6 +135,32 @@ class UserControllerTest(
                 jsonPath("$.account.disabled") { isBoolean() }
                 jsonPath("$.roles") { isArray() }
             }
+    }
+
+    @Test
+    fun disable() {
+        val user = UserFixture.create(faker)
+        repository.save(user)
+
+        mockMvc.patch("/users/${user.id}/disable")
+            .andExpectAll {
+                status { isNoContent() }
+            }
+
+        assertThat(user.account.disabled).isTrue()
+    }
+
+    @Test
+    fun enable() {
+        val user = UserFixture.disabled(faker)
+        repository.save(user)
+
+        mockMvc.patch("/users/${user.id}/enable")
+            .andExpectAll {
+                status { isNoContent() }
+            }
+
+        assertThat(user.account.disabled).isFalse()
     }
 
     companion object {

@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -46,5 +47,27 @@ class UserController(private val repository: UserRepository) : AbstractControlle
         val user = repository.findByIdOrNull(id) ?: throw ResourceNotFoundException.byId<User>(id)
 
         return ResponseEntity.ok(user)
+    }
+
+    @PatchMapping("/{id}/disable")
+    fun disable(@PathVariable id: Long): ResponseEntity<Unit> {
+        val user = repository.findByIdOrNull(id) ?: throw ResourceNotFoundException.byId<User>(id)
+
+        user.account.disabled = true
+
+        repository.save(user)
+
+        return ResponseEntity.noContent().build()
+    }
+
+    @PatchMapping("/{id}/enable")
+    fun enable(@PathVariable id: Long): ResponseEntity<Unit> {
+        val user = repository.findByIdOrNull(id) ?: throw ResourceNotFoundException.byId<User>(id)
+
+        user.account.disabled = false
+
+        repository.save(user)
+
+        return ResponseEntity.noContent().build()
     }
 }
