@@ -1,8 +1,10 @@
 package com.example.demo
 
 import com.example.demo.entity.Post
+import com.example.demo.entity.User
 import com.example.demo.repository.PostRepository
 import com.example.demo.repository.TagRepository
+import com.example.demo.repository.UserRepository
 import net.datafaker.Faker
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
@@ -13,10 +15,22 @@ import org.springframework.transaction.annotation.Transactional
 class AppDataInitializer(
     private val faker: Faker,
     private val postRepository: PostRepository,
-    private val tagRepository: TagRepository
+    private val tagRepository: TagRepository,
+    private val userRepository: UserRepository
 ) : ApplicationRunner {
     @Transactional
     override fun run(args: ApplicationArguments) {
+        repeat(5) {
+            val user = User(
+                username = faker.credentials().username(),
+                password = faker.credentials().password()
+            )
+
+            userRepository.save(user)
+        }
+
+        userRepository.flush()
+
         repeat(5) {
             val post = Post(
                 author = faker.programmingLanguage().creator(),

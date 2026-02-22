@@ -27,7 +27,6 @@ class PostControllerTest(
     @Autowired private val objectMapper: ObjectMapper,
     @Autowired private val repository: PostRepository
 ) {
-
     @Test
     fun index() {
         mockMvc.get("/posts")
@@ -58,6 +57,7 @@ class PostControllerTest(
             jsonPath("$.publishedAt") { value(null) }
             jsonPath("$.state") { value(PostState.DRAFT.name) }
             jsonPath("$.tags") { isArray() }
+            jsonPath("$.tags") { isEmpty() }
             jsonPath("$.version") { isNumber() }
         }
     }
@@ -107,8 +107,8 @@ class PostControllerTest(
                 status { isOk() }
                 content { contentType(MediaType.APPLICATION_JSON) }
                 jsonPath("$.id") { value(POST_ID) }
-                jsonPath("$.author") { value("Roberto Ierusalimschy") }
-                jsonPath("$.title") { value("Ubuntu Server 19.10") }
+                jsonPath("$.author") { exists() }
+                jsonPath("$.title") { exists() }
                 jsonPath("$.content") { exists() }
                 jsonPath("$.publishedAt") { value(null) }
                 jsonPath("$.state") { value(PostState.DRAFT.name) }

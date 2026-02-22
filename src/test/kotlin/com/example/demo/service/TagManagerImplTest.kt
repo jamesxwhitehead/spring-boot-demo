@@ -39,16 +39,16 @@ class TagManagerImplTest(
     @Test
     fun removePostTag() {
         val post = postRepository.findByIdOrNull(POST_ID_15) ?: fail { ResourceNotFoundException.byId<Post>(POST_ID_15).toString() }
-        val tag = tagRepository.findByName("Asus") ?: fail { ResourceNotFoundException.byField<Tag>("name", "Asus").toString() }
+        val tag = tagRepository.findByName("digital") ?: fail { ResourceNotFoundException.byField<Tag>("name", "digital").toString() }
 
         assertThat(post.tags.size).isEqualTo(6)
         assertThat(post.tags).contains(tag)
 
-        tagManager.removePostTag(POST_ID_15, "Asus")
+        tagManager.removePostTag(POST_ID_15, "digital")
 
         assertThat(post.tags.size).isEqualTo(5)
         assertThat(post.tags).doesNotContain(tag)
-        assertThat(tagRepository.findByName("Asus")).isNull()
+        assertThat(tagRepository.findByName("digital")).isNull()
     }
 
     companion object {
