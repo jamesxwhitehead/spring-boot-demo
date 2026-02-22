@@ -36,9 +36,7 @@ class PostController(
 
         repository.save(post)
 
-        val location = buildLocationHeader(post.id!!)
-
-        return ResponseEntity.created(location).body(post)
+        return ResponseEntity.created(buildLocationHeader(post.id!!)).body(post)
     }
 
     @GetMapping("/{id}")

@@ -11,11 +11,13 @@ import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.security.core.userdetails.UsernameNotFoundException
+import org.springframework.security.crypto.password.PasswordEncoder
 
 @ExtendWith(MockitoExtension::class)
 class UserManagerImplTest {
     private val userRepository = mock<UserRepository>()
-    private val userManager = UserManagerImpl(userRepository)
+    private val passwordEncoder = mock<PasswordEncoder>()
+    private val userManager = UserManagerImpl(userRepository, passwordEncoder)
 
     @Test
     fun loadUserByUsername() {

@@ -1,6 +1,7 @@
 package com.example.demo.entity
 
 import com.example.demo.dto.request.CreateUserRequestDto
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.CollectionTable
 import jakarta.persistence.Column
 import jakarta.persistence.ElementCollection
@@ -17,6 +18,7 @@ class User(
     @Column(unique = true, nullable = false)
     var username: String,
 
+    @JsonIgnore
     @Column(nullable = false)
     var password: String
 ) {

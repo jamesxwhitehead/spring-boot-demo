@@ -1,6 +1,7 @@
 package com.example.demo
 
 import com.example.demo.entity.Post
+import com.example.demo.entity.Role
 import com.example.demo.entity.User
 import com.example.demo.repository.PostRepository
 import com.example.demo.repository.TagRepository
@@ -20,6 +21,13 @@ class AppDataInitializer(
 ) : ApplicationRunner {
     @Transactional
     override fun run(args: ApplicationArguments) {
+        val admin = User(
+            username = "admin",
+            password = $$"$2a$10$Y0MK.Yye4lEbpSkyIZ1wsu5cJbURFBG0z/YI5WJVHt4/SVUvb2pZm"
+        ).apply { roles.add(Role.ROLE_ADMIN) }
+
+        userRepository.save(admin)
+
         repeat(5) {
             val user = User(
                 username = faker.credentials().username(),

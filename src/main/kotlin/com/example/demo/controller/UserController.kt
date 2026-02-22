@@ -5,6 +5,7 @@ import com.example.demo.entity.User
 import com.example.demo.exception.ResourceNotFoundException
 import com.example.demo.exception.byId
 import com.example.demo.repository.UserRepository
+import com.example.demo.security.UserManager
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -19,7 +20,10 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/users")
-class UserController(private val repository: UserRepository) : AbstractController() {
+class UserController(
+    private val repository: UserRepository,
+    private val manager: UserManager
+) : AbstractController() {
     @GetMapping
     fun index(): ResponseEntity<List<User>> {
         val users = repository.findAll()
@@ -33,13 +37,9 @@ class UserController(private val repository: UserRepository) : AbstractControlle
             return ResponseEntity.status(HttpStatus.CONFLICT).build()
         }
 
-        val user = User.fromDto(request)
+        val user = manager.persist(request)
 
-        repository.save(user)
-
-        val location = buildLocationHeader(user.id!!)
-
-        return ResponseEntity.created(location).body(user)
+        return ResponseEntity.created(buildLocationHeader(user.id!!)).body(user)
     }
 
     @GetMapping("/{id}")

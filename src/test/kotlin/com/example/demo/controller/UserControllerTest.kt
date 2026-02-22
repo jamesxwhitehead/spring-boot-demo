@@ -36,7 +36,7 @@ class UserControllerTest(
                 status { isOk() }
                 content { contentType(MediaType.APPLICATION_JSON) }
                 jsonPath("$") { isArray() }
-                jsonPath("$.length()") { value(5) }
+                jsonPath("$.length()") { value(6) }
             }
     }
 
@@ -54,7 +54,7 @@ class UserControllerTest(
             content { contentType(MediaType.APPLICATION_JSON) }
             jsonPath("$.id") { isNumber() }
             jsonPath("$.username") { value(dto.username) }
-            jsonPath("$.password") { value(dto.password) }
+            jsonPath("$.password") { doesNotExist() }
             jsonPath("$.account") { isMap() }
             jsonPath("$.account.accountExpired") { value(false) }
             jsonPath("$.account.accountLocked") { value(false) }
@@ -126,14 +126,17 @@ class UserControllerTest(
                 status { isOk() }
                 content { contentType(MediaType.APPLICATION_JSON) }
                 jsonPath("$.id") { value(USER_ID) }
-                jsonPath("$.username") { value("angelina.howell") }
-                jsonPath("$.password") { value("9a4349b5x") }
+                jsonPath("$.username") { value("admin") }
+                jsonPath("$.password") { doesNotExist() }
                 jsonPath("$.account") { isMap() }
-                jsonPath("$.account.accountExpired") { isBoolean() }
-                jsonPath("$.account.accountLocked") { isBoolean() }
-                jsonPath("$.account.credentialsExpired") { isBoolean() }
-                jsonPath("$.account.disabled") { isBoolean() }
+                jsonPath("$.account.accountExpired") { value(false) }
+                jsonPath("$.account.accountLocked") { value(false) }
+                jsonPath("$.account.credentialsExpired") { value(false) }
+                jsonPath("$.account.disabled") { value(false) }
                 jsonPath("$.roles") { isArray() }
+                jsonPath("$.roles.length()") { value(2) }
+                jsonPath("$.roles[0]") { value("ROLE_ADMIN") }
+                jsonPath("$.roles[1]") { value("ROLE_USER") }
             }
     }
 
