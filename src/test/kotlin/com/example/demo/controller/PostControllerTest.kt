@@ -40,7 +40,7 @@ class PostControllerTest(
 
     @Test
     fun store() {
-        val dto = CreatePostRequestDtoFixture.create(faker)
+        val dto = CreatePostRequestDtoFixture.new(faker)
 
         mockMvc.post("/posts") {
             accept = MediaType.APPLICATION_JSON

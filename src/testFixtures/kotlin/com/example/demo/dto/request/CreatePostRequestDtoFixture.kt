@@ -4,7 +4,7 @@ import net.datafaker.Faker
 
 class CreatePostRequestDtoFixture {
     companion object {
-        fun create(faker: Faker) = CreatePostRequestDto(
+        fun new(faker: Faker) = CreatePostRequestDto(
             faker.book().author(),
             faker.book().title(),
             faker.lorem().paragraph()

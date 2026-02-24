@@ -42,7 +42,7 @@ class UserControllerTest(
 
     @Test
     fun store() {
-        val dto = CreateUserRequestDtoFixture.create(faker)
+        val dto = CreateUserRequestDtoFixture.new(faker)
 
         mockMvc.post("/users") {
             accept = MediaType.APPLICATION_JSON
@@ -104,7 +104,7 @@ class UserControllerTest(
 
     @Test
     fun storeShouldReturnConflictWhenUserExists() {
-        val dto = CreateUserRequestDtoFixture.create(faker)
+        val dto = CreateUserRequestDtoFixture.new(faker)
         val user = User.fromDto(dto)
         repository.save(user)
 
@@ -142,7 +142,7 @@ class UserControllerTest(
 
     @Test
     fun disable() {
-        val user = UserFixture.create(faker)
+        val user = UserFixture.new(faker)
         repository.save(user)
 
         mockMvc.patch("/users/${user.id}/disable")

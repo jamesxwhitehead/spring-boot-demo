@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
+import jakarta.persistence.OrderBy
 
 @Entity(name = "app_user")
 class User(
@@ -36,6 +37,7 @@ class User(
         joinColumns = [JoinColumn(name = "user_id")]
     )
     @Column(name = "role", nullable = false)
+    @OrderBy("role ASC")
     val roles: MutableSet<Role> = mutableSetOf(Role.ROLE_USER)
 
     companion object {

@@ -1,5 +1,11 @@
 package com.example.demo.controller
 
+import com.example.demo.entity.PostFixture
+import com.example.demo.entity.TagFixture
+import com.example.demo.repository.PostRepository
+import com.example.demo.repository.TagRepository
+import net.datafaker.Faker
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -12,28 +18,43 @@ import org.springframework.transaction.annotation.Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class PostTagControllerTest(@Autowired private val mockMvc: MockMvc) {
+class PostTagControllerTest(
+    @Autowired private val mockMvc: MockMvc,
+    @Autowired private val faker: Faker,
+    @Autowired private val postRepository: PostRepository,
+    @Autowired private val tagRepository: TagRepository
+) {
     @Test
     fun update() {
-        val path = "/posts/${POST_ID}/tags/test"
+        val post = PostFixture.withTag(faker)
+        postRepository.save(post)
+        val tag = TagFixture.new(faker)
+
+        val path = "/posts/${post.id}/tags/${tag.name}"
 
         mockMvc.put(path)
             .andExpectAll {
                 status { isNoContent() }
             }
+
+        assertThat(post.tags).flatExtracting({ it.name }).contains(tag.name)
+        assertThat(tagRepository.findByName(tag.name)).isNotNull()
     }
 
     @Test
     fun destroy() {
-        val path = "/posts/${POST_ID}/tags/HP"
+        val post = PostFixture.withTag(faker)
+        postRepository.save(post)
+        val tag = post.tags.first()
+
+        val path = "/posts/${post.id}/tags/${tag.name}"
 
         mockMvc.delete(path)
             .andExpectAll {
                 status { isNoContent() }
             }
-    }
 
-    companion object {
-        private const val POST_ID: Long = 1L
+        assertThat(post.tags).flatExtracting({ it.name }).doesNotContain(tag.name)
+        assertThat(tagRepository.findByName(tag.name)).isNull()
     }
 }

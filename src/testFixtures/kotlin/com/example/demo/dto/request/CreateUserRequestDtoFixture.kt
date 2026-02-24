@@ -4,7 +4,7 @@ import net.datafaker.Faker
 
 class CreateUserRequestDtoFixture {
     companion object {
-        fun create(faker: Faker) = CreateUserRequestDto(
+        fun new(faker: Faker) = CreateUserRequestDto(
             faker.credentials().username(),
             faker.credentials().password()
         )
