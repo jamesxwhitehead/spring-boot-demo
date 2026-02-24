@@ -1,12 +1,16 @@
 package com.example.demo.service
 
 import com.example.demo.entity.Post
+import com.example.demo.exception.PostStateTransitionNotAllowedException
+import com.example.demo.exception.ResourceNotFoundException
 import com.example.demo.repository.PostRepository
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.given
 import org.mockito.BDDMockito.then
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.never
 import org.mockito.junit.jupiter.MockitoExtension
 import java.util.Optional
 
@@ -28,6 +32,24 @@ class PostPublisherImplTest {
     }
 
     @Test
+    fun publishShouldThrowResourceNotFoundExceptionWhenPostDoesNotExist() {
+        given(repository.findById(1)).willReturn(Optional.ofNullable(null))
+
+        assertThrows<ResourceNotFoundException> { postPublisher.publish(1) }
+    }
+
+    @Test
+    fun publishShouldThrowPostStateTransitionNotAllowedException() {
+        val post = mock<Post>()
+        given(repository.findById(1)).willReturn(Optional.of(post))
+        given(post.publish()).willThrow(IllegalStateException::class.java)
+
+        assertThrows<PostStateTransitionNotAllowedException> { postPublisher.publish(1) }
+
+        then(repository).should(never()).save(post)
+    }
+
+    @Test
     fun archive() {
         val post = mock<Post>()
         given(repository.findById(1)).willReturn(Optional.of(post))
@@ -37,5 +59,23 @@ class PostPublisherImplTest {
 
         then(post).should().archive()
         then(repository).should().save(post)
+    }
+
+    @Test
+    fun archiveShouldThrowResourceNotFoundExceptionWhenPostDoesNotExist() {
+        given(repository.findById(1)).willReturn(Optional.ofNullable(null))
+
+        assertThrows<ResourceNotFoundException> { postPublisher.archive(1) }
+    }
+
+    @Test
+    fun archiveShouldThrowPostStateTransitionNotAllowedException() {
+        val post = mock<Post>()
+        given(repository.findById(1)).willReturn(Optional.of(post))
+        given(post.archive()).willThrow(IllegalStateException::class.java)
+
+        assertThrows<PostStateTransitionNotAllowedException> { postPublisher.archive(1) }
+
+        then(repository).should(never()).save(post)
     }
 }
