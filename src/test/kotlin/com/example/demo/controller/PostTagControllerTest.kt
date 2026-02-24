@@ -55,6 +55,7 @@ class PostTagControllerTest(
             }
 
         assertThat(post.tags).flatExtracting({ it.name }).doesNotContain(tag.name)
+        // Verify OrphanTagCleanupListener.onPostTagRemovedEvent was called.
         assertThat(tagRepository.findByName(tag.name)).isNull()
     }
 }
